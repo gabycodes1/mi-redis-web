@@ -8,7 +8,7 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const redisClient = createClient({ url: 'redis://localhost:6379' });
+const redisClient = createClient({ url: process.env.REDIS_URL || 'redis://localhost:6379' });
 redisClient.on('error', (err) => console.log('❌ Error Redis:', err));
 
 app.post('/api/save', async (req, res) => {
