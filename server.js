@@ -52,4 +52,3 @@ app.listen(PORT, async () => {
     console.log(`🚀 Servidor listo en http://localhost:${PORT}`);
     console.log('🔗 Conectado a Redis');
 });
-
