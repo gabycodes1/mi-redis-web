@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Redis Studio | Enterprise Dashboard</title>
+    <title>Proyecto Redis Insight</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -46,6 +46,87 @@
             pointer-events: none;
             z-index: 0;
         }
+
+        /* --- PANTALLA DE INICIO (MENÚ) --- */
+        #start-menu {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-base);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.6s ease, visibility 0.6s;
+        }
+        
+        #start-menu.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .menu-content {
+            text-align: center;
+            background: var(--bg-panel);
+            padding: 50px 60px;
+            border-radius: 24px;
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+            z-index: 10;
+        }
+
+        .menu-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .menu-subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 40px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .team-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .team-member {
+            background: rgba(255,255,255,0.05);
+            padding: 10px 20px;
+            border-radius: 99px;
+            font-family: var(--font-code);
+            font-size: 0.9rem;
+            border: 1px solid var(--border-glass);
+            color: #e2e8f0;
+        }
+
+        .btn-start {
+            padding: 15px 40px;
+            background: var(--accent-primary);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px -5px var(--accent-glow);
+        }
+        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px var(--accent-glow); filter: brightness(1.1); }
 
         /* --- BARRA SUPERIOR (Header) --- */
         header {
@@ -111,7 +192,7 @@
         
         /* --- E.V.E. 3D --- */
         .eve-stage {
-            height: 240px;
+            height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -123,6 +204,30 @@
             margin-bottom: 10px;
         }
 
+        .eve-bubble {
+            background: #fff;
+            color: #0f172a;
+            padding: 10px 16px;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            max-width: 200px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            z-index: 20;
+        }
+        .eve-bubble::after {
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            border-width: 8px 8px 0; border-style: solid; border-color: #fff transparent transparent transparent;
+        }
+        .eve-bubble.show { opacity: 1; transform: translateY(0); }
+
         .eve-wrapper {
             position: relative;
             display: flex;
@@ -130,6 +235,7 @@
             align-items: center;
             animation: float 4s ease-in-out infinite;
             transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            margin-top: 20px;
         }
 
         .eve-head {
@@ -285,13 +391,31 @@
 </head>
 <body>
 
+    <!-- PANTALLA DE INICIO -->
+    <div id="start-menu">
+        <div class="menu-content">
+            <h1 class="menu-title">Proyecto Redis Insight</h1>
+            <p class="menu-subtitle">Panel de Control de Base de Datos</p>
+            
+            <div class="team-list">
+                <span class="team-member">Yared</span>
+                <span class="team-member">Gabriela</span>
+                <span class="team-member">Isis</span>
+                <span class="team-member">Edwin</span>
+            </div>
+
+            <button class="btn-start" onclick="entrarAlSistema()">Entrar al Sistema</button>
+        </div>
+    </div>
+
+    <!-- SISTEMA PRINCIPAL -->
     <header>
         <div class="logo">
-            <span class="logo-icon">◈</span> Redis <span>Studio</span>
+            <span class="logo-icon">◈</span> Proyecto <span>Redis Insight</span>
         </div>
         <div class="header-stats">
             <div class="stat-item">
-                <span class="stat-label">Estado del Clúster</span>
+                <span class="stat-label">Estado</span>
                 <span class="stat-value">● ONLINE</span>
             </div>
             <div class="stat-item">
@@ -315,6 +439,7 @@
             </div>
 
             <div class="eve-stage">
+                <div class="eve-bubble" id="eve-bubble">¡Hola equipo! Estoy listo para guardar sus datos.</div>
                 <div class="eve-wrapper" id="eve">
                     <div class="eve-head">
                         <div class="eve-visor">
@@ -374,6 +499,23 @@
     <script>
         let cacheData = [];
 
+        // Lógica del Menú de Inicio
+        function entrarAlSistema() {
+            document.getElementById('start-menu').classList.add('hidden');
+            // Mostrar burbuja de saludo después de entrar
+            setTimeout(() => {
+                mostrarBurbuja("¡Bienvenidos al panel, equipo! Presiona Guardar para probar la base de datos.");
+            }, 800);
+        }
+
+        // Lógica de la burbuja de diálogo de E.V.E.
+        function mostrarBurbuja(texto) {
+            const bubble = document.getElementById('eve-bubble');
+            bubble.textContent = texto;
+            bubble.classList.add('show');
+            setTimeout(() => { bubble.classList.remove('show'); }, 5000);
+        }
+
         // Manejo de la Interfaz de E.V.E.
         function setEveState(state, text) {
             const eve = document.getElementById('eve');
@@ -415,16 +557,19 @@
 
                 if(data.success) {
                     setEveState('happy', '¡REGISTRO GUARDADO!');
+                    mostrarBurbuja("¡Dato guardado con éxito en Redis! ☁️");
                     addLog('OK: Registro guardado exitosamente.', 'success');
                     document.getElementById('clave').value = '';
                     document.getElementById('valor').value = '';
                     cargarLista();
                 } else {
                     setEveState('', 'ERROR AL GUARDAR');
+                    mostrarBurbuja("Hubo un error al guardar el dato. 😢");
                     addLog(`ERROR: ${data.message}`, 'error');
                 }
             } catch (e) {
                 setEveState('', 'SIN CONEXIÓN');
+                mostrarBurbuja("¡Socorro! No puedo conectar con el servidor.");
                 addLog('CRÍTICO: Error al conectar con el backend.', 'error');
             } finally {
                 setTimeout(() => setEveState('', 'SISTEMA EN ESPERA'), 2500);
@@ -490,19 +635,20 @@
             addLog(`Eliminando clave ${key}...`);
             await fetch('/api/delete/' + encodeURIComponent(key), { method: 'DELETE' });
             addLog(`Clave ${key} eliminada.`, 'success');
+            mostrarBurbuja("Registro eliminado de la base de datos. 🗑️");
             cargarLista();
         }
 
         async function borrarTodo() {
             if(!confirm('¡PELIGRO! ¿Estás seguro de que quieres borrar TODA la base de datos?')) return;
             addLog('Iniciando purga total de la base de datos...', 'error');
+            mostrarBurbuja("¡Vaciando toda la base de datos!");
             
-            // Esto asume que tienes una ruta para borrar todo. 
-            // Si no la tienes en tu server.js, haremos un bucle para borrar uno por uno.
             for (const item of cacheData) {
                 await fetch('/api/delete/' + encodeURIComponent(item.key), { method: 'DELETE' });
             }
             addLog('Base de datos vaciada por completo.', 'success');
+            mostrarBurbuja("Base de datos limpia. ¡Listos para empezar! ✨");
             cargarLista();
         }
 
