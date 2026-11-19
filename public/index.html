@@ -190,8 +190,28 @@
             gap: 10px;
         }
 
-        .panel-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+        .panel-title { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
         
+        /* --- NUEVO DISEÑO DEL EXPLORADOR DE DATOS --- */
+        .live-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.75rem;
+            color: var(--accent-green);
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 10px;
+            border-radius: 20px;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
+        .live-dot {
+            width: 8px; height: 8px; background: var(--accent-green);
+            border-radius: 50%; box-shadow: 0 0 8px var(--accent-green);
+            animation: pulseLive 2s infinite;
+        }
+        @keyframes pulseLive { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+
         /* --- E.V.E. 3D --- */
         .eve-stage {
             height: 240px;
@@ -359,7 +379,7 @@
             display: flex; justify-content: space-between; align-items: center;
             transition: all 0.2s; gap: 10px;
         }
-        .db-item:hover { background: rgba(255,255,255,0.03); border-left-color: #38bdf8; }
+        .db-item:hover { background: rgba(255,255,255,0.03); border-left-color: #38bdf8; transform: translateX(3px); }
 
         .key-text { font-family: var(--font-code); color: #38bdf8; font-weight: 600; font-size: 0.9rem; word-break: break-all; }
         .value-text { color: var(--text-main); margin-top: 4px; font-size: 0.85rem; word-break: break-word; }
@@ -501,20 +521,28 @@
         <!-- PANEL DERECHO: Base de Datos -->
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">🗄️ Almacén de Datos</div>
-                <span style="color: var(--text-muted); font-size: 0.8rem;" id="contador">0 registros</span>
+                <div class="panel-title">
+                    🗄️ Explorador de Claves
+                </div>
+                <div class="live-indicator">
+                    <div class="live-dot"></div> EN VIVO
+                </div>
             </div>
 
             <div class="toolbar">
-                <input type="text" class="search-input" id="buscador" placeholder="Filtrar registros..." oninput="filtrar()">
+                <input type="text" class="search-input" id="buscador" placeholder="Buscar por clave o valor..." oninput="filtrar()">
                 <button class="btn-danger" onclick="borrarTodo()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     Limpiar Todo
                 </button>
             </div>
 
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span style="font-size: 0.8rem; color: var(--text-muted);">Mostrando <strong id="contador" style="color: var(--accent-primary);">0</strong> registros</span>
+            </div>
+
             <div class="db-list" id="lista">
-                <div style="text-align: center; padding: 30px; color: #475569;">Conectando al servidor...</div>
+                <div style="text-align: center; padding: 30px; color: #475569;">Sincronizando con la nube...</div>
             </div>
 
             <!-- Consola de Logs -->
@@ -626,7 +654,7 @@
             const cont = document.getElementById('contador');
             const total = document.getElementById('stat-total');
             
-            cont.textContent = `${cacheData.length} registros`;
+            cont.textContent = cacheData.length;
             total.textContent = cacheData.length;
 
             if(datos.length === 0) {
