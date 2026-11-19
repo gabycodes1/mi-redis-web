@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto Redis Insight</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <title>Proyecto Redis Insight | Enterprise</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-base: #030712;
-            --bg-panel: rgba(15, 23, 42, 0.75);
-            --border-glass: rgba(56, 189, 248, 0.15);
+            --bg-base: #02040a;
+            --bg-panel: rgba(10, 15, 30, 0.65);
+            --border-glass: rgba(56, 189, 248, 0.2);
             --accent-primary: #0ea5e9;
-            --accent-glow: rgba(14, 165, 233, 0.5);
+            --accent-purple: #8b5cf6;
+            --accent-glow: rgba(14, 165, 233, 0.6);
             --accent-green: #10b981;
             --accent-red: #ef4444;
             --text-main: #f8fafc;
@@ -24,22 +25,28 @@
         
         body {
             background-color: var(--bg-base);
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(14, 165, 233, 0.15) 0%, transparent 50%),
-                radial-gradient(circle at 100% 100%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
-                url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230ea5e9' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo animado de Red Neuronal */
+        #network-bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            opacity: 0.15;
+            pointer-events: none;
         }
 
         /* --- PANTALLA DE INICIO (MENÚ) --- */
         #start-menu {
             position: fixed;
             inset: 0;
-            background: rgba(3, 7, 18, 0.95);
+            background: rgba(2, 4, 10, 0.9);
             backdrop-filter: blur(20px);
             z-index: 100;
             display: flex;
@@ -58,66 +65,81 @@
             padding: 50px 40px;
             border-radius: 24px;
             border: 1px solid var(--border-glass);
-            box-shadow: 0 20px 60px rgba(0,0,0,0.6), inset 0 0 20px rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 50px rgba(14, 165, 233, 0.2), inset 0 0 30px rgba(14, 165, 233, 0.1);
             max-width: 600px;
             width: 100%;
             position: relative;
             z-index: 10;
+            overflow: hidden;
         }
+        
+        .menu-content::before {
+            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
+            background: conic-gradient(transparent, rgba(14, 165, 233, 0.1), transparent 30%);
+            animation: rotateBorder 4s linear infinite;
+            z-index: -1;
+        }
+        @keyframes rotateBorder { 100% { transform: rotate(360deg); } }
 
         .menu-title {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2.8rem;
+            font-weight: 800;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #38bdf8, #818cf8);
+            background: linear-gradient(135deg, #38bdf8, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -0.03em;
-            line-height: 1.2;
+            letter-spacing: -0.04em;
+            line-height: 1.1;
+            text-shadow: 0 0 30px rgba(56, 189, 248, 0.3);
         }
 
         .menu-subtitle {
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             margin-bottom: 30px;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
             text-transform: uppercase;
+            font-weight: 600;
         }
 
         .team-list {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 40px;
         }
 
         .team-member {
-            background: rgba(255,255,255,0.05);
-            padding: 8px 16px;
+            background: rgba(255,255,255,0.03);
+            padding: 10px 20px;
             border-radius: 99px;
             font-family: var(--font-code);
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             border: 1px solid var(--border-glass);
             color: #e2e8f0;
-            box-shadow: 0 0 10px rgba(14, 165, 233, 0.1);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.1);
+            transition: 0.3s;
         }
+        .team-member:hover { background: rgba(14, 165, 233, 0.2); transform: translateY(-2px); }
 
         .btn-start {
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #0ea5e9, #3b82f6);
+            padding: 18px 40px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
             color: #fff;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 10px 20px -5px var(--accent-glow);
+            box-shadow: 0 10px 30px -5px rgba(14, 165, 233, 0.6);
             width: 100%;
-            max-width: 300px;
+            max-width: 320px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
-        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 15px 30px -5px var(--accent-glow); filter: brightness(1.1); }
+        .btn-start:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 15px 40px -5px rgba(14, 165, 233, 0.8); }
 
         /* --- BARRA SUPERIOR (Header) --- */
         header {
@@ -128,88 +150,97 @@
             align-items: center;
             padding: 15px 30px;
             border-bottom: 1px solid var(--border-glass);
-            background: rgba(3, 7, 18, 0.7);
-            backdrop-filter: blur(16px);
+            background: rgba(2, 4, 10, 0.7);
+            backdrop-filter: blur(20px);
             flex-wrap: wrap;
             gap: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
-        .logo { font-size: 1.3rem; font-weight: 700; display: flex; align-items: center; gap: 10px; letter-spacing: -0.03em; }
-        .logo-icon { color: var(--accent-primary); font-size: 1.5rem; }
-        .logo span { background: linear-gradient(135deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .logo { font-size: 1.4rem; font-weight: 800; display: flex; align-items: center; gap: 12px; letter-spacing: -0.04em; }
+        .logo-icon { color: var(--accent-primary); font-size: 1.6rem; animation: pulseIcon 2s infinite; }
+        @keyframes pulseIcon { 0%, 100% { transform: scale(1); filter: drop-shadow(0 0 5px var(--accent-primary)); } 50% { transform: scale(1.1); filter: drop-shadow(0 0 15px var(--accent-primary)); } }
+        .logo span { background: linear-gradient(135deg, #38bdf8, #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         
-        .header-stats { display: flex; gap: 20px; flex-wrap: wrap; }
-        .stat-item { display: flex; flex-direction: column; align-items: flex-end; }
-        .stat-label { font-size: 0.65rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; }
-        .stat-value { font-size: 1rem; font-weight: 600; font-family: var(--font-code); color: var(--accent-green); text-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+        .header-stats { display: flex; gap: 25px; flex-wrap: wrap; align-items: center; }
+        .stat-item { display: flex; flex-direction: column; align-items: flex-end; position: relative; }
+        .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+        .stat-value { font-size: 1.1rem; font-weight: 700; font-family: var(--font-code); color: var(--accent-primary); text-shadow: 0 0 10px rgba(14, 165, 233, 0.4); }
+        
+        /* Barras de estado superiores */
+        .mini-chart { width: 80px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; overflow: hidden; }
+        .mini-chart-fill { height: 100%; background: var(--accent-green); width: 45%; box-shadow: 0 0 10px var(--accent-green); animation: chartPulse 3s infinite alternate; }
+        @keyframes chartPulse { 0% { width: 40%; } 100% { width: 60%; } }
 
         /* --- CONTENEDOR PRINCIPAL --- */
         .main-container {
             position: relative;
             z-index: 10;
             flex: 1;
-            max-width: 1400px;
+            max-width: 1500px;
             width: 100%;
             margin: 0 auto;
-            padding: 20px;
+            padding: 25px;
             display: grid;
-            grid-template-columns: 400px 1fr;
-            gap: 20px;
+            grid-template-columns: 420px 1fr;
+            gap: 25px;
         }
 
-        /* --- TARJETAS (Glassmorphism) --- */
+        /* --- TARJETAS (Glassmorphism Premium) --- */
         .panel {
             background: var(--bg-panel);
             border: 1px solid var(--border-glass);
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.5), inset 0 0 30px rgba(56, 189, 248, 0.05);
-            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6), inset 0 0 20px rgba(56, 189, 248, 0.05);
+            backdrop-filter: blur(25px);
             display: flex;
             flex-direction: column;
+            position: relative;
         }
+        
+        /* Esquinas decorativas de panel */
+        .panel::before, .panel::after { content: ''; position: absolute; width: 15px; height: 15px; border: 2px solid var(--accent-primary); transition: 0.3s; }
+        .panel::before { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 24px 0 0 0; }
+        .panel::after { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 24px 0; }
+        .panel:hover::before, .panel:hover::after { width: 30px; height: 30px; border-color: #38bdf8; box-shadow: 0 0 15px var(--accent-primary); }
 
         .panel-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 12px;
-            border-bottom: 1px solid var(--border-glass);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed rgba(255,255,255,0.1);
             flex-wrap: wrap;
             gap: 10px;
         }
 
-        .panel-title { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; text-shadow: 0 0 10px rgba(255,255,255,0.1); }
+        .panel-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
         
         /* --- INDICADOR EN VIVO (BOTÓN SECRETO) --- */
         .live-indicator {
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 0.75rem;
+            gap: 8px;
+            font-size: 0.8rem;
             color: var(--accent-green);
-            font-weight: 600;
+            font-weight: 800;
             background: rgba(16, 185, 129, 0.1);
-            padding: 6px 12px;
+            padding: 8px 16px;
             border-radius: 20px;
-            border: 1px solid rgba(16, 185, 129, 0.3);
+            border: 1px solid rgba(16, 185, 129, 0.4);
             cursor: pointer;
             user-select: none;
             transition: all 0.3s;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
         }
-        .live-indicator:hover { background: rgba(16, 185, 129, 0.2); }
-        .live-dot {
-            width: 8px; height: 8px; background: var(--accent-green);
-            border-radius: 50%; box-shadow: 0 0 8px var(--accent-green);
-            animation: pulseLive 2s infinite;
-        }
-        @keyframes pulseLive { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.8); } }
+        .live-indicator:hover { background: rgba(16, 185, 129, 0.2); transform: scale(1.05); }
+        .live-dot { width: 10px; height: 10px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 10px var(--accent-green); animation: pulseLive 1.5s infinite; }
+        @keyframes pulseLive { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
 
-        /* --- E.V.E. 3D --- */
+        /* --- E.V.E. 3D PREMIUM --- */
         .eve-stage {
-            height: 250px;
+            height: 260px;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -217,32 +248,38 @@
             position: relative;
             perspective: 1000px;
             background: radial-gradient(circle at center, rgba(14, 165, 233, 0.15) 0%, transparent 65%);
-            border-radius: 16px;
-            margin-bottom: 10px;
+            border-radius: 20px;
+            margin-bottom: 15px;
+            overflow: hidden;
+            border: 1px solid rgba(56, 189, 248, 0.1);
+        }
+        
+        /* Líneas de escaneo de fondo */
+        .eve-stage::before {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(14, 165, 233, 0.05) 2px, rgba(14, 165, 233, 0.05) 4px);
+            pointer-events: none;
         }
 
         .eve-bubble {
             background: #fff;
             color: #0f172a;
-            padding: 12px 16px;
+            padding: 12px 18px;
             border-radius: 16px;
             font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: 700;
             position: absolute;
-            top: 10px;
-            right: 10px;
+            top: 15px;
+            right: 15px;
             max-width: 200px;
             text-align: center;
             opacity: 0;
             transform: translateY(10px);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(255,255,255,0.2);
             z-index: 20;
         }
-        .eve-bubble::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            border-width: 8px 8px 0; border-style: solid; border-color: #fff transparent transparent transparent;
-        }
+        .eve-bubble::after { content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); border-width: 8px 8px 0; border-style: solid; border-color: #fff transparent transparent transparent; }
         .eve-bubble.show { opacity: 1; transform: translateY(0); }
 
         .eve-wrapper {
@@ -264,6 +301,19 @@
             display: flex; justify-content: center; align-items: center;
         }
 
+        /* Antena de E.V.E. */
+        .eve-head::after {
+            content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 15px; background: #94a3b8; border-radius: 2px;
+        }
+        .eve-head::before {
+            content: ''; position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
+            width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%;
+            box-shadow: 0 0 15px var(--accent-primary);
+            animation: blinkAntenna 1s infinite;
+        }
+        @keyframes blinkAntenna { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
         .eve-visor {
             width: 90px; height: 48px;
             background: radial-gradient(circle at 50% 20%, #1e293b, #020617);
@@ -273,11 +323,7 @@
             display: flex; justify-content: center; align-items: center; gap: 16px;
         }
 
-        .eve-visor::before {
-            content: ''; position: absolute; top: 4px; left: 16px;
-            width: 58px; height: 12px; background: rgba(255,255,255,0.15);
-            border-radius: 50%;
-        }
+        .eve-visor::before { content: ''; position: absolute; top: 4px; left: 16px; width: 58px; height: 12px; background: rgba(255,255,255,0.15); border-radius: 50%; }
 
         .eve-eye {
             width: 24px; height: 16px;
@@ -293,7 +339,16 @@
             border-radius: 30px 30px 50px 50px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 -10px 15px rgba(0,0,0,0.15);
             position: relative; z-index: 2; margin-top: -5px;
+            display: flex; justify-content: center; align-items: center;
         }
+        
+        /* Núcleo de energía */
+        .eve-core {
+            width: 20px; height: 20px; background: var(--accent-primary); border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-primary), 0 0 40px var(--accent-primary);
+            animation: pulseCore 2s infinite;
+        }
+        @keyframes pulseCore { 0%, 100% { transform: scale(1); opacity: 0.8; } 50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 30px var(--accent-primary), 0 0 60px var(--accent-primary); } }
 
         .eve-arm {
             width: 18px; height: 85px;
@@ -307,104 +362,105 @@
 
         .eve-status {
             font-family: var(--font-code); font-size: 0.8rem; color: var(--accent-primary);
-            margin-top: 15px; padding: 6px 16px; border-radius: 20px;
-            background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.2);
-            letter-spacing: 0.05em; transition: all 0.3s; box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+            margin-top: 15px; padding: 8px 18px; border-radius: 20px;
+            background: rgba(14, 165, 233, 0.1); border: 1px solid rgba(14, 165, 233, 0.3);
+            letter-spacing: 0.1em; transition: all 0.3s; box-shadow: 0 0 15px rgba(14, 165, 233, 0.2);
+            font-weight: 700;
         }
 
         /* --- FORMULARIO --- */
-        .form-group { margin-bottom: 18px; }
-        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-group { margin-bottom: 20px; position: relative; }
+        label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
         
         input {
-            width: 100%; padding: 14px 16px;
-            background: rgba(0,0,0,0.5); border: 1px solid var(--border-glass);
-            border-radius: 12px; color: #fff; font-family: var(--font-code); font-size: 0.9rem;
+            width: 100%; padding: 16px;
+            background: rgba(0,0,0,0.6); border: 1px solid var(--border-glass);
+            border-radius: 12px; color: #fff; font-family: var(--font-code); font-size: 0.95rem;
             transition: all 0.3s; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
         }
-        input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 5px rgba(0,0,0,0.5); outline: none; background: rgba(0,0,0,0.7); }
+        input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px var(--accent-glow), inset 0 2px 5px rgba(0,0,0,0.5); outline: none; background: rgba(0,0,0,0.8); }
 
         .btn-main {
-            width: 100%; padding: 16px; margin-top: 10px;
-            background: linear-gradient(135deg, #0ea5e9, #2563eb);
-            color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 700;
+            width: 100%; padding: 18px; margin-top: 10px;
+            background: linear-gradient(135deg, #0ea5e9, #8b5cf6);
+            color: #fff; border: none; border-radius: 12px; font-size: 1rem; font-weight: 800;
             cursor: pointer; transition: all 0.3s;
             display: flex; justify-content: center; align-items: center; gap: 10px;
-            box-shadow: 0 10px 20px -5px var(--accent-glow);
+            box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.5);
+            text-transform: uppercase; letter-spacing: 0.05em;
         }
-        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 25px -5px var(--accent-glow); filter: brightness(1.1); }
+        .btn-main:hover { transform: translateY(-3px); box-shadow: 0 15px 35px -5px rgba(14, 165, 233, 0.7); filter: brightness(1.1); }
 
         /* --- ESTADOS E.V.E. --- */
         .eve-wrapper.scanning { transform: scale(1.05) translateY(-10px); }
         .eve-wrapper.scanning .eve-eye { animation: none; background: #fff; box-shadow: 0 0 20px #fff, 0 0 40px var(--accent-primary); }
-        .eve-wrapper.scanning .eve-visor::after {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
-            background: var(--accent-primary); box-shadow: 0 0 15px var(--accent-primary);
-            animation: scan 0.6s linear infinite;
-        }
+        .eve-wrapper.scanning .eve-visor::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: var(--accent-primary); box-shadow: 0 0 15px var(--accent-primary); animation: scan 0.6s linear infinite; }
         .eve-wrapper.happy .eve-eye { background: transparent; box-shadow: none; border-top: 5px solid var(--accent-green); border-radius: 50% 50% 0 0; animation: none; }
         .eve-wrapper.happy .eve-arm.left { transform: rotate(40deg) translateY(-15px); }
         .eve-wrapper.happy .eve-arm.right { transform: rotate(-40deg) translateY(-15px); }
 
         /* --- PANEL DERECHO: DATOS --- */
-        .toolbar { display: flex; gap: 10px; margin-bottom: 15px; flex-direction: column; }
+        .toolbar { display: flex; gap: 12px; margin-bottom: 20px; flex-direction: column; }
         .search-input {
-            flex: 1; padding: 12px 16px; border-radius: 10px;
-            background: rgba(255,255,255,0.05); border: 1px solid var(--border-glass);
-            color: #fff; font-family: var(--font-ui); font-size: 0.9rem; transition: 0.3s;
+            flex: 1; padding: 14px 20px; border-radius: 12px;
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border-glass);
+            color: #fff; font-family: var(--font-ui); font-size: 0.95rem; transition: 0.3s;
         }
-        .search-input:focus { border-color: var(--accent-primary); outline: none; }
+        .search-input:focus { border-color: var(--accent-primary); outline: none; background: rgba(0,0,0,0.5); }
         
         .btn-danger {
-            padding: 12px 16px; border-radius: 10px;
-            background: rgba(239, 68, 68, 0.15); color: #ef4444;
-            border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600;
-            cursor: pointer; transition: all 0.3s; display: none; /* Oculto por defecto */
+            padding: 14px 20px; border-radius: 12px;
+            background: rgba(239, 68, 68, 0.1); color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 700;
+            cursor: pointer; transition: all 0.3s; display: none;
             align-items: center; justify-content: center; gap: 8px;
-            font-size: 0.9rem;
+            font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em;
         }
         .btn-danger.visible { display: flex; animation: fadeIn 0.5s ease; }
-        .btn-danger:hover { background: #ef4444; color: #fff; box-shadow: 0 0 15px rgba(239,68,68,0.4); }
+        .btn-danger:hover { background: var(--accent-red); color: #fff; box-shadow: 0 0 20px rgba(239,68,68,0.5); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .db-list { flex: 1; overflow-y: auto; max-height: 400px; padding-right: 5px; display: flex; flex-direction: column; gap: 10px; }
-        .db-list::-webkit-scrollbar { width: 6px; }
-        .db-list::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.3); border-radius: 10px; }
+        .db-list { flex: 1; overflow-y: auto; max-height: 420px; padding-right: 10px; display: flex; flex-direction: column; gap: 12px; }
+        .db-list::-webkit-scrollbar { width: 8px; }
+        .db-list::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.4); border-radius: 10px; }
 
         .db-item {
             background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
             border-left: 4px solid var(--accent-primary);
-            padding: 16px; border-radius: 12px;
+            padding: 18px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: center;
-            transition: all 0.2s; gap: 10px; position: relative;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); gap: 15px; position: relative;
+            overflow: hidden;
         }
-        .db-item:hover { background: rgba(0,0,0,0.6); border-left-color: #38bdf8; transform: translateX(5px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        /* Efecto Holográfico */
+        .db-item::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transition: 0.5s; }
+        .db-item:hover::before { left: 100%; }
+        .db-item:hover { background: rgba(14, 165, 233, 0.1); border-left-color: #38bdf8; transform: translateX(8px) scale(1.01); box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(14, 165, 233, 0.2); }
 
-        .key-text { font-family: var(--font-code); color: #38bdf8; font-weight: 600; font-size: 0.95rem; word-break: break-all; }
-        .value-text { color: var(--text-main); margin-top: 4px; font-size: 0.9rem; word-break: break-word; }
-        .time-text { font-family: var(--font-code); font-size: 0.7rem; color: var(--text-muted); margin-top: 8px; display: flex; align-items: center; gap: 5px; }
+        .key-text { font-family: var(--font-code); color: #38bdf8; font-weight: 700; font-size: 1rem; word-break: break-all; text-shadow: 0 0 8px rgba(56,189,248,0.4); }
+        .value-text { color: var(--text-main); margin-top: 6px; font-size: 0.95rem; word-break: break-word; }
+        .time-text { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; display: flex; align-items: center; gap: 5px; }
 
         .btn-icon {
             background: transparent; border: none; color: var(--text-muted);
-            cursor: pointer; padding: 8px; border-radius: 8px; transition: 0.2s;
-            display: none; /* Oculto por defecto */
-            align-items: center; justify-content: center;
+            cursor: pointer; padding: 10px; border-radius: 8px; transition: 0.2s;
+            display: none; align-items: center; justify-content: center;
         }
         .btn-icon.visible { display: flex; animation: fadeIn 0.5s ease; }
         .btn-icon:hover { background: rgba(255,255,255,0.1); color: #fff; }
-        .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.2); color: #ef4444; }
+        .btn-icon.delete:hover { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); box-shadow: 0 0 15px rgba(239,68,68,0.3); }
 
         /* --- CONSOLA DE LOGS --- */
         .console-box {
-            margin-top: 15px; background: #000000; border: 1px solid var(--border-glass);
-            border-radius: 10px; padding: 15px; font-family: var(--font-code); font-size: 0.75rem;
-            height: 110px; overflow-y: auto; color: #64748b;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+            margin-top: 20px; background: #000000; border: 1px solid var(--border-glass);
+            border-radius: 12px; padding: 15px; font-family: var(--font-code); font-size: 0.8rem;
+            height: 120px; overflow-y: auto; color: #64748b;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
         }
-        .log-line { margin-bottom: 4px; }
+        .log-line { margin-bottom: 6px; line-height: 1.4; }
         .log-line.success { color: var(--accent-green); }
         .log-line.error { color: var(--accent-red); }
-        .log-time { color: #475569; margin-right: 6px; }
+        .log-time { color: #475569; margin-right: 8px; }
 
         /* --- ANIMACIONES --- */
         @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
@@ -419,15 +475,15 @@
         @media (max-width: 900px) {
             .main-container { grid-template-columns: 1fr; padding: 15px; }
             header { padding: 15px; flex-direction: column; align-items: flex-start; }
-            .header-stats { width: 100%; justify-content: space-between; gap: 10px; }
+            .header-stats { width: 100%; justify-content: space-between; gap: 10px; margin-top: 10px; }
             .stat-item { align-items: flex-start; }
-            .menu-title { font-size: 1.8rem; }
+            .menu-title { font-size: 2rem; }
         }
 
         @media (max-width: 480px) {
-            .menu-content { padding: 25px 15px; }
-            .menu-title { font-size: 1.5rem; }
-            .panel { padding: 15px; }
+            .menu-content { padding: 30px 20px; }
+            .menu-title { font-size: 1.6rem; }
+            .panel { padding: 20px; }
             .eve-head { width: 90px; height: 60px; }
             .eve-visor { width: 75px; height: 40px; }
             .eve-torso { width: 80px; height: 100px; }
@@ -441,11 +497,14 @@
 </head>
 <body>
 
+    <!-- Fondo de Red Neuronal Animado -->
+    <canvas id="network-bg"></canvas>
+
     <!-- PANTALLA DE INICIO -->
     <div id="start-menu">
         <div class="menu-content">
-            <h1 class="menu-title">Proyecto Redis Insight</h1>
-            <p class="menu-subtitle">Panel de Control de Base de Datos</p>
+            <h1 class="menu-title">Redis Insight</h1>
+            <p class="menu-subtitle">Enterprise Data Management</p>
             
             <div class="team-list">
                 <span class="team-member">Yared</span>
@@ -466,7 +525,8 @@
         <div class="header-stats">
             <div class="stat-item">
                 <span class="stat-label">Estado</span>
-                <span class="stat-value">● ONLINE</span>
+                <span class="stat-value" style="color: var(--accent-green);">● ONLINE</span>
+                <div class="mini-chart"><div class="mini-chart-fill"></div></div>
             </div>
             <div class="stat-item">
                 <span class="stat-label">Latencia</span>
@@ -474,7 +534,7 @@
             </div>
             <div class="stat-item">
                 <span class="stat-label">Registros</span>
-                <span class="stat-value" id="stat-total" style="color: #38bdf8;">0</span>
+                <span class="stat-value" id="stat-total">0</span>
             </div>
         </div>
     </header>
@@ -485,7 +545,7 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">🤖 Asistente E.V.E.</div>
-                <span style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-code);">v2.0.4</span>
+                <span style="font-size: 0.75rem; color: var(--accent-purple); font-family: var(--font-code); font-weight:700;">v3.0.0</span>
             </div>
 
             <div class="eve-stage">
@@ -498,7 +558,9 @@
                         </div>
                     </div>
                     <div class="eve-arm left"></div>
-                    <div class="eve-torso"></div>
+                    <div class="eve-torso">
+                        <div class="eve-core"></div>
+                    </div>
                     <div class="eve-arm right"></div>
                 </div>
                 <div class="eve-status" id="eve-status">SISTEMA EN ESPERA</div>
@@ -527,7 +589,7 @@
                     🗄️ Explorador de Claves
                 </div>
                 <!-- DOBLE CLIC AQUÍ PARA MODO ADMIN -->
-                <div class="live-indicator" ondblclick="activarAdmin()" title="Panel en vivo">
+                <div class="live-indicator" ondblclick="activarAdmin()" title="Doble clic para administrar">
                     <div class="live-dot"></div> EN VIVO
                 </div>
             </div>
@@ -542,11 +604,11 @@
             </div>
 
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span style="font-size: 0.8rem; color: var(--text-muted);">Mostrando <strong id="contador" style="color: var(--accent-primary);">0</strong> registros</span>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Mostrando <strong id="contador" style="color: var(--accent-primary);">0</strong> registros</span>
             </div>
 
             <div class="db-list" id="lista">
-                <div style="text-align: center; padding: 30px; color: #475569;">Sincronizando con la nube...</div>
+                <div style="text-align: center; padding: 40px; color: #475569;">Sincronizando con la nube...</div>
             </div>
 
             <!-- Consola de Logs -->
@@ -558,9 +620,60 @@
 
     <script>
         let cacheData = [];
-        let isAdmin = false; // Controla si el usuario es administrador
+        let isAdmin = false;
 
-        // Función del Modo Administrador
+        // --- Animación del fondo de Red Neuronal ---
+        const canvas = document.getElementById('network-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        for (let i = 0; i < 60; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.5,
+                vy: (Math.random() - 0.5) * 0.5,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function drawNetwork() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(14, 165, 233, 0.5)';
+            ctx.strokeStyle = 'rgba(14, 165, 233, 0.1)';
+            
+            particles.forEach(p => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawNetwork);
+        }
+        drawNetwork();
+
+        // --- Lógica del Sistema ---
         function activarAdmin() {
             if (isAdmin) return;
             const pass = prompt("🔒 Ingresa la contraseña de Administrador:");
@@ -731,7 +844,6 @@
             }[s]));
         }
 
-        // Inicializar
         addLog('Conexión establecida con Redis.');
         cargarLista();
         setInterval(cargarLista, 3000);
