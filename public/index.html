@@ -95,7 +95,7 @@
 
         .menu-subtitle {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 1rem;
             margin-bottom: 30px;
             letter-spacing: 0.1em;
             text-transform: uppercase;
@@ -166,7 +166,6 @@
         .stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
         .stat-value { font-size: 1.1rem; font-weight: 700; font-family: var(--font-code); color: var(--accent-primary); text-shadow: 0 0 10px rgba(14, 165, 233, 0.4); }
         
-        /* Barras de estado superiores */
         .mini-chart { width: 80px; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; margin-top: 5px; overflow: hidden; }
         .mini-chart-fill { height: 100%; background: var(--accent-green); width: 45%; box-shadow: 0 0 10px var(--accent-green); animation: chartPulse 3s infinite alternate; }
         @keyframes chartPulse { 0% { width: 40%; } 100% { width: 60%; } }
@@ -198,7 +197,6 @@
             position: relative;
         }
         
-        /* Esquinas decorativas de panel */
         .panel::before, .panel::after { content: ''; position: absolute; width: 15px; height: 15px; border: 2px solid var(--accent-primary); transition: 0.3s; }
         .panel::before { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 24px 0 0 0; }
         .panel::after { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 24px 0; }
@@ -217,7 +215,7 @@
 
         .panel-title { font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 10px; letter-spacing: -0.02em; }
         
-        /* --- INDICADOR EN VIVO (BOTÓN SECRETO) --- */
+        /* --- INDICADOR EN VIVO --- */
         .live-indicator {
             display: flex;
             align-items: center;
@@ -254,7 +252,6 @@
             border: 1px solid rgba(56, 189, 248, 0.1);
         }
         
-        /* Líneas de escaneo de fondo */
         .eve-stage::before {
             content: ''; position: absolute; inset: 0;
             background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(14, 165, 233, 0.05) 2px, rgba(14, 165, 233, 0.05) 4px);
@@ -301,17 +298,8 @@
             display: flex; justify-content: center; align-items: center;
         }
 
-        /* Antena de E.V.E. */
-        .eve-head::after {
-            content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 15px; background: #94a3b8; border-radius: 2px;
-        }
-        .eve-head::before {
-            content: ''; position: absolute; top: -22px; left: 50%; transform: translateX(-50%);
-            width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%;
-            box-shadow: 0 0 15px var(--accent-primary);
-            animation: blinkAntenna 1s infinite;
-        }
+        .eve-head::after { content: ''; position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 4px; height: 15px; background: #94a3b8; border-radius: 2px; }
+        .eve-head::before { content: ''; position: absolute; top: -22px; left: 50%; transform: translateX(-50%); width: 10px; height: 10px; background: var(--accent-primary); border-radius: 50%; box-shadow: 0 0 15px var(--accent-primary); animation: blinkAntenna 1s infinite; }
         @keyframes blinkAntenna { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         .eve-visor {
@@ -342,7 +330,6 @@
             display: flex; justify-content: center; align-items: center;
         }
         
-        /* Núcleo de energía */
         .eve-core {
             width: 20px; height: 20px; background: var(--accent-primary); border-radius: 50%;
             box-shadow: 0 0 20px var(--accent-primary), 0 0 40px var(--accent-primary);
@@ -420,26 +407,39 @@
         .btn-danger:hover { background: var(--accent-red); color: #fff; box-shadow: 0 0 20px rgba(239,68,68,0.5); }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .db-list { flex: 1; overflow-y: auto; max-height: 420px; padding-right: 10px; display: flex; flex-direction: column; gap: 12px; }
+        /* MEJORA: Scroll visible y con espacio para que no se corte */
+        .db-list { 
+            flex: 1; 
+            overflow-y: auto; 
+            max-height: 400px; 
+            padding-right: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 12px; 
+        }
         .db-list::-webkit-scrollbar { width: 8px; }
-        .db-list::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.4); border-radius: 10px; }
+        .db-list::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
+        .db-list::-webkit-scrollbar-thumb { background: rgba(56, 189, 248, 0.5); border-radius: 10px; }
+        .db-list::-webkit-scrollbar-thumb:hover { background: rgba(56, 189, 248, 0.8); }
 
         .db-item {
-            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.05);
             border-left: 4px solid var(--accent-primary);
             padding: 18px; border-radius: 12px;
             display: flex; justify-content: space-between; align-items: center;
             transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); gap: 15px; position: relative;
             overflow: hidden;
+            /* Aseguramos que el contenido sea visible */
+            min-height: fit-content;
         }
-        /* Efecto Holográfico */
         .db-item::before { content: ''; position: absolute; top: 0; left: -100%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent); transition: 0.5s; }
         .db-item:hover::before { left: 100%; }
         .db-item:hover { background: rgba(14, 165, 233, 0.1); border-left-color: #38bdf8; transform: translateX(8px) scale(1.01); box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px rgba(14, 165, 233, 0.2); }
 
         .key-text { font-family: var(--font-code); color: #38bdf8; font-weight: 700; font-size: 1rem; word-break: break-all; text-shadow: 0 0 8px rgba(56,189,248,0.4); }
-        .value-text { color: var(--text-main); margin-top: 6px; font-size: 0.95rem; word-break: break-word; }
-        .time-text { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+        /* MEJORA: Texto del valor con mejor interlineado */
+        .value-text { color: var(--text-main); margin-top: 8px; font-size: 0.95rem; line-height: 1.5; word-wrap: break-word; white-space: pre-wrap; }
+        .time-text { font-family: var(--font-code); font-size: 0.75rem; color: var(--text-muted); margin-top: 12px; display: flex; align-items: center; gap: 5px; }
 
         .btn-icon {
             background: transparent; border: none; color: var(--text-muted);
@@ -497,14 +497,13 @@
 </head>
 <body>
 
-    <!-- Fondo de Red Neuronal Animado -->
     <canvas id="network-bg"></canvas>
 
     <!-- PANTALLA DE INICIO -->
     <div id="start-menu">
         <div class="menu-content">
             <h1 class="menu-title">Redis Insight</h1>
-            <p class="menu-subtitle">Enterprise Data Management</p>
+            <p class="menu-subtitle">Gestión de Datos de Alto Rendimiento</p>
             
             <div class="team-list">
                 <span class="team-member">Yared</span>
@@ -541,7 +540,6 @@
 
     <div class="main-container">
         
-        <!-- PANEL IZQUIERDO: Entrada de Datos -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">🤖 Asistente E.V.E.</div>
@@ -582,13 +580,11 @@
             </form>
         </div>
 
-        <!-- PANEL DERECHO: Base de Datos -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">
                     🗄️ Explorador de Claves
                 </div>
-                <!-- DOBLE CLIC AQUÍ PARA MODO ADMIN -->
                 <div class="live-indicator" ondblclick="activarAdmin()" title="Doble clic para administrar">
                     <div class="live-dot"></div> EN VIVO
                 </div>
@@ -596,7 +592,6 @@
 
             <div class="toolbar">
                 <input type="text" class="search-input" id="buscador" placeholder="Buscar por clave o valor..." oninput="filtrar()">
-                <!-- Botón de borrar oculto hasta ser Admin -->
                 <button class="btn-danger" id="btn-borrar-todo" onclick="borrarTodo()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                     Borrar Todo (Admin)
@@ -611,7 +606,6 @@
                 <div style="text-align: center; padding: 40px; color: #475569;">Sincronizando con la nube...</div>
             </div>
 
-            <!-- Consola de Logs -->
             <div class="console-box" id="console">
                 <div class="log-line"><span class="log-time">[SYS]</span> Iniciando conexión con Redis Cloud...</div>
             </div>
